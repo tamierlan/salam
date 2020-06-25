@@ -24,6 +24,7 @@ export default class Profile extends Component {
       ethnicity: '',
       marital_status: '',
       photo: '',
+      FormData: '',
 
       first: '',
       last: '',
@@ -41,13 +42,16 @@ export default class Profile extends Component {
 
   handleChange = e => {this.setState({[e.target.name]: e.target.value, first: '', last: '', mail: ''})}
 
-  changePhoto = file => {
+  changePhoto = ({ target: { files } }) => {
     let data = new FormData()
-    data.append('categoryImage', file[0])
-    data.append('name', file.name)
+    data.append('categoryImage', files[0])
+    data.append('name', files.name)
+    console.log(data)
     this.setState({ photo: data })
-    console.log(this.state.photo)
   }
+
+
+
 
   w = e => setInterval(() => {this.setState({saved: 'close', button: 'open'})}, 2000)
 
@@ -62,7 +66,8 @@ export default class Profile extends Component {
     } else {
       this.setState({button: 'close', load: 'open'})
       const {id, first_name, last_name, email, phone_number, age, gender, ethnicity, marital_status } = this.state;
-      
+      console.log(this.state.photo)
+
 
       await axios.post('/users/userupdate/'+id, { first_name, last_name, email, phone_number, age, gender, ethnicity, marital_status })
       .then(res => {
@@ -105,7 +110,10 @@ export default class Profile extends Component {
 
     return (
       <div className='userprofile'>
+
         <input type='file' onChange={this.changePhoto} />
+
+
         <div className='userprofile-pic'>
           <MdAddAPhoto className='addphoto' />
           <img src={this.state.photo} alt='photo' />
