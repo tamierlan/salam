@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import loadingGif from '../image/loading.gif';
 import UserHardDet from './UserHardDet'
-// import zakirbek from '../image/zakirbek.jpeg'
+import avatar from '../image/avatar.jpeg'
 import jwt_decode from 'jwt-decode'
 import { MdAddAPhoto } from 'react-icons/md'
 import Gender from './Gender'
@@ -23,8 +23,7 @@ export default class Profile extends Component {
       gender: '',
       ethnicity: '',
       marital_status: '',
-      photo: '',
-      FormData: '',
+      image: '',
 
       first: '',
       last: '',
@@ -36,25 +35,28 @@ export default class Profile extends Component {
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
-    this.changePhoto = this.changePhoto.bind(this)
   }
 
 
   handleChange = e => {this.setState({[e.target.name]: e.target.value, first: '', last: '', mail: ''})}
 
-  changePhoto = ({ target: { files } }) => {
+  upload = ({ target: { files } }) => {
     let data = new FormData()
     data.append('categoryImage', files[0])
-    data.append('name', files.name)
-    console.log(data)
-    this.setState({ photo: data })
+    data.append('name', files[0].name)
+    axios.post('users/category', data)
+    .then(res => {
+      this.setState({
+        image: res.data.category.image
+      })
+      console.log(res.data.category)
+    })
   }
 
 
 
 
   w = e => setInterval(() => {this.setState({saved: 'close', button: 'open'})}, 2000)
-
   async handleSubmit(e) {
     e.preventDefault()
     if (this.state.first_name === '') {
@@ -65,18 +67,15 @@ export default class Profile extends Component {
       this.setState({mail: 'red-text'})
     } else {
       this.setState({button: 'close', load: 'open'})
-      const {id, first_name, last_name, email, phone_number, age, gender, ethnicity, marital_status } = this.state;
-      console.log(this.state.photo)
+      const {id, first_name, last_name, email, phone_number, age, gender, ethnicity, marital_status, image } = this.state;
 
-
-      await axios.post('/users/userupdate/'+id, { first_name, last_name, email, phone_number, age, gender, ethnicity, marital_status })
+      await axios.post('/users/userupdate/'+id, { first_name, last_name, email, phone_number, age, gender, ethnicity, marital_status, image })
       .then(res => {
         if (res.data === 'updated') {
           let x = setInterval(() => {
             this.setState({load: 'close', saved: 'open'})
             this.w()
           }, 2000)
-          console.log(this.state.photo)
         }
       })
     }
@@ -97,9 +96,8 @@ export default class Profile extends Component {
       gender: decoded.gender,
       ethnicity: decoded.ethnicity,
       marital_status: decoded.marital_status,
-      photo: decoded.file
+      image: decoded.image
     })
-    console.log(this.state.photo)
   }
 
 
@@ -111,13 +109,16 @@ export default class Profile extends Component {
     return (
       <div className='userprofile'>
 
-        <input type='file' onChange={this.changePhoto} />
-
-
+        <input onChange={this.upload} type='file' id='file' />
         <div className='userprofile-pic'>
-          <MdAddAPhoto className='addphoto' />
-          <img src={this.state.photo} alt='photo' />
+          <label for='file'>
+            <MdAddAPhoto for='file' className='addphoto' />
+            <img for='file' src={this.state.image ? this.state.image : avatar} alt='photo' />
+          </label>
         </div>
+
+
+
         <div className='user-details'>
 
           <UserHardDet />

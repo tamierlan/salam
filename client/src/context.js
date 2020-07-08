@@ -118,10 +118,6 @@ class SalamProvider extends Component {
       this.setState(() => {
         return {users: res.data}
       })
-      console.log(this.state.users)
-      // if (localStorage.usertoken) {
-      //    // window.location = '/home'
-      // }
     })
   }
 
@@ -130,9 +126,6 @@ class SalamProvider extends Component {
   getUser = id => {
     let tempUser = [...this.state.users]
     const userfound = tempUser.find(user => user._id === id)
-
-
-
     return userfound;
   }
 

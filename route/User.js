@@ -3,9 +3,16 @@ const cors = require('cors')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const User = require('../model/User')
+// image modules
+const uploadMulter = require('./imageUpload.js')
+const { createCategory } = require('./controllers.js')
+
+
 router.use(cors())
 
 process.env.SECRET_KEY = 'secret'
+
+router.post('/category', uploadMulter, createCategory)
 
 router.get('/', (req, res) => {
   User.find().then(users => res.json(users)).catch(err => res.status(400).json('Error: ' + err))
@@ -26,7 +33,7 @@ router.post('/login', (req, res) => {
           gender: user.gender,
           ethnicity: user.ethnicity,
           marital_status: user.marital_status,
-          file: user.file
+          image: user.image
         }
         let token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: 1440 })
         res.send(token)
@@ -46,7 +53,7 @@ router.post('/register', (req, res) => {
     gender: req.body.gender,
     ethnicity: req.body.ethnicity,
     marital_status: req.body.marital_status,
-    file: req.body.file,
+    image: req.body.image,
     created: new Date()
   }
 
@@ -74,7 +81,7 @@ router.post('/userupdate/:id', (req, res) => {
     user.gender = req.body.gender;
     user.ethnicity = req.body.ethnicity;
     user.marital_status = req.body.marital_status;
-    user.file = req.body.file;
+    user.image = req.body.image;
 
     user.save()
     .then(() => res.json('updated'))
@@ -82,6 +89,7 @@ router.post('/userupdate/:id', (req, res) => {
   })
   .catch(err => res.status(400).json('Error: server crashed ' + err))
 })
+
 
 
 

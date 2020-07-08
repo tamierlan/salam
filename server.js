@@ -1,12 +1,16 @@
 const express = require('express')
+const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
-const mongoose = require('mongoose');
+// const morgan = require('morgan') //image package
 const server = express()
 require('dotenv').config();
 const uri = process.env.MONGO_LINK;
 const User = require('./route/User');
 const connection = mongoose.connection;
+
+server.use('/route/uploads', express.static('route/uploads')) //use upload folder to save image
+
 server.use(cors());
 server.use(express.json());
 

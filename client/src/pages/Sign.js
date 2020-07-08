@@ -10,31 +10,37 @@ import { SalamConsumer } from '../context'
 import Navbar from '../components/Navbar'
 
 export default Sign => {
-  return (
-    <SalamConsumer>
 
-    {(value) => {
+
+  if (localStorage.usertoken) {
+    return window.location = '/home'
+  } else {
     return (
-      <div className='back-holder' onClick={value.init_state}>
-        <Navbar />
+      <SalamConsumer>
 
-        <div className={value.sign_up}> <Register /> </div>
+      {(value) => {
+      return (
+        <div className='back-holder' onClick={value.init_state}>
+          <Navbar />
 
-        <div className={value.sign_in}> <Login /> </div>
+          <div className={value.sign_up}> <Register /> </div>
 
-        <div className={value.success_signup}> <SuccessSignup /> </div>
+          <div className={value.sign_in}> <Login /> </div>
 
-        <div className={value.email_taken}> <EmailTaken /> </div>
+          <div className={value.success_signup}> <SuccessSignup /> </div>
 
-        <div className={value.user_notexist}> <UserNotExist /> </div>
+          <div className={value.email_taken}> <EmailTaken /> </div>
 
-        <div className={value.error}> <Error /> </div>
+          <div className={value.user_notexist}> <UserNotExist /> </div>
 
-        <div className={value.loading}><Loading /></div>
+          <div className={value.error}> <Error /> </div>
 
-      </div>
+          <div className={value.loading}><Loading /></div>
+
+        </div>
+      )
+      }}
+      </SalamConsumer>
     )
-    }}
-    </SalamConsumer>
-  )
+  }
 }

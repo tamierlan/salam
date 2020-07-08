@@ -31,11 +31,13 @@ const UserSchema = new Schema({
   marital_status: {
     type: String
   },
+  image: {
+    type: String
+  },
   date: {
     type: Date,
     default: Date.now
-  },
-  file: {}
+  }
 })
 
 module.exports = User = mongoose.model('users', UserSchema)
